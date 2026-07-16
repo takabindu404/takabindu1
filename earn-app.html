@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>TakaBindu — আয় করুন প্রতি ক্লিকে</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5FAF7;
+    --surface:#FFFFFF;
+    --primary:#0F4C42;
+    --primary-dark:#0A3830;
+    --accent:#D6A756;
+    --accent-soft:#F1E1BE;
+    --text:#16211D;
+    --muted:#5B6B65;
+    --warn:#C1573F;
+    --line:#E1EDE7;
+    --radius:20px;
+    --shadow: 0 10px 30px rgba(15,76,66,0.10);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 8%, rgba(15,76,66,0.06), transparent 40%),
+      radial-gradient(circle at 85% 0%, rgba(214,167,86,0.10), transparent 45%),
+      var(--bg);
+    font-family:'Noto Sans Bengali','Poppins',sans-serif;
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .app{
+    width:100%;
+    max-width:460px;
+    min-height:100vh;
+    background:var(--surface);
+    box-shadow: var(--shadow);
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 18px;
+    background:var(--primary);
+    color:#fff;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    font-size:18px;
+    letter-spacing:0.2px;
+  }
+  .brand .coin{
+    width:30px;height:30px;border-radius:50%;
+    background:radial-gradient(circle at 32% 30%, #FFE9B8, var(--accent) 70%);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:800;color:var(--primary-dark);
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,0.35);
+  }
+  .menu-btn{
+    background:rgba(255,255,255,0.12);
+    border:none;
+    width:40px;height:40px;
+    border-radius:12px;
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    transition:background .2s ease;
+  }
+  .menu-btn:hover{background:rgba(255,255,255,0.2);}
+  .menu-btn:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+  .menu-btn svg{width:20px;height:20px;}
+
+  /* ---------- Main ---------- */
+  main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:28px 20px 40px;
+  }
+
+  .balance-card{
+    width:100%;
+    background:linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-radius:var(--radius);
+    padding:22px 24px;
+    color:#fff;
+    margin-bottom:38px;
+    position:relative;
+    overflow:hidden;
+  }
+  .balance-card::after{
+    content:"";
+    position:absolute;
+    right:-30px;top:-30px;
+    width:120px;height:120px;
+    border-radius:50%;
+    background:rgba(214,167,86,0.18);
+  }
+  .balance-label{
+    font-size:13px;
+    opacity:0.75;
+    margin-bottom:6px;
+    font-weight:500;
+  }
+  .balance-value{
+    font-family:'Poppins',sans-serif;
+    font-size:34px;
+    font-weight:800;
+    letter-spacing:0.5px;
+  }
+  .balance-value span{color:var(--accent);}
+
+  .earn-zone{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    width:100%;
+  }
+
+  .ring-wrap{
+    position:relative;
+    width:210px;height:210px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .pulse-ring{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:2px solid var(--accent);
+    opacity:0;
+    animation:pulse 2.6s ease-out infinite;
+  }
+  .pulse-ring.r2{animation-delay:1.3s;}
+  @keyframes pulse{
+    0%{ transform:scale(0.72); opacity:0.55; }
+    100%{ transform:scale(1.15); opacity:0; }
+  }
+
+  .earn-btn{
+    position:relative;
+    z-index:2;
+    width:180px;height:180px;
+    border-radius:50%;
+    border:none;
+    cursor:pointer;
+    background:radial-gradient(circle at 35% 28%, #14614F, var(--primary) 60%, var(--primary-dark) 100%);
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    box-shadow:0 14px 28px rgba(15,76,66,0.35), inset 0 2px 0 rgba(255,255,255,0.15);
+    transition:transform .12s ease, box-shadow .12s ease;
+    font-family:'Noto Sans Bengali','Poppins',sans-serif;
+  }
+  .earn-btn:active{
+    transform:scale(0.94);
+    box-shadow:0 6px 14px rgba(15,76,66,0.3), inset 0 2px 0 rgba(255,255,255,0.15);
+  }
+  .earn-btn:focus-visible{outline:3px solid var(--accent); outline-offset:4px;}
+  .earn-btn .top-text{
+    font-size:13px;
+    opacity:0.85;
+    font-weight:500;
+  }
+  .earn-btn .amount{
+    font-family:'Poppins',sans-serif;
+    font-size:26px;
+    font-weight:800;
+    color:var(--accent);
+  }
+
+  .hint{
+    color:var(--muted);
+    font-size:13.5px;
+    text-align:center;
+    max-width:280px;
+    line-height:1.6;
+  }
+
+  /* floating coin particles */
+  .coin-fx{
+    position:absolute;
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    color:var(--accent);
+    font-size:15px;
+    pointer-events:none;
+    animation:floatUp 1s ease-out forwards;
+    z-index:5;
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(0); opacity:1; }
+    100%{ transform:translateY(-70px); opacity:0; }
+  }
+
+  /* ---------- Overlay / Panels ---------- */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(10,20,17,0.45);
+    backdrop-filter:blur(1px);
+    z-index:40;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease;
+  }
+  .overlay.show{opacity:1; pointer-events:auto;}
+
+  .panel{
+    position:fixed;
+    top:0;right:0;
+    height:100%;
+    width:86%;
+    max-width:380px;
+    background:var(--surface);
+    z-index:50;
+    transform:translateX(100%);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+    display:flex;
+    flex-direction:column;
+    box-shadow:-8px 0 30px rgba(0,0,0,0.15);
+  }
+  .panel.show{transform:translateX(0);}
+  .panel-head{
+    background:var(--primary);
+    color:#fff;
+    padding:20px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .panel-head h2{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    font-size:17px;
+    font-weight:700;
+  }
+  .close-btn{
+    background:rgba(255,255,255,0.12);
+    border:none;
+    width:32px;height:32px;
+    border-radius:9px;
+    color:#fff;
+    cursor:pointer;
+    font-size:18px;
+    line-height:1;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .panel-body{
+    padding:22px 20px;
+    overflow-y:auto;
+    flex:1;
+  }
+
+  .field{
+    margin-bottom:18px;
+  }
+  .field label{
+    display:block;
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:7px;
+    font-weight:500;
+  }
+  .field input{
+    width:100%;
+    padding:13px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    font-size:15px;
+    font-family:inherit;
+    color:var(--text);
+    background:#FBFDFC;
+  }
+  .field input:focus{
+    outline:none;
+    border-color:var(--primary);
+    background:#fff;
+  }
+
+  .save-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:var(--primary);
+    color:#fff;
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+    font-family:inherit;
+    margin-top:4px;
+  }
+  .save-btn:active{background:var(--primary-dark);}
+
+  .saved-msg{
+    margin-top:10px;
+    font-size:13px;
+    color:var(--primary);
+    font-weight:600;
+    opacity:0;
+    transition:opacity .3s ease;
+  }
+  .saved-msg.show{opacity:1;}
+
+  .divider{
+    height:1px;
+    background:var(--line);
+    margin:22px 0;
+  }
+
+  .mini-balance{
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .mini-balance .lbl{font-size:12.5px; color:var(--muted); font-weight:500;}
+  .mini-balance .val{font-family:'Poppins',sans-serif; font-weight:800; font-size:19px; color:var(--primary);}
+
+  .withdraw-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:var(--accent);
+    color:var(--primary-dark);
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .withdraw-btn:active{filter:brightness(0.95);}
+
+  /* Withdraw modal */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(10,20,17,0.5);
+    z-index:60;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-card{
+    background:#fff;
+    border-radius:18px;
+    padding:28px 24px;
+    max-width:320px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,0.25);
+  }
+  .modal-card .icon{
+    width:56px;height:56px;
+    border-radius:50%;
+    background:var(--accent-soft);
+    color:var(--warn);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 16px;
+    font-size:26px;
+    font-weight:800;
+  }
+  .modal-card h3{
+    margin:0 0 8px;
+    font-family:'Poppins',sans-serif;
+    font-size:16px;
+    color:var(--text);
+  }
+  .modal-card p{
+    margin:0 0 4px;
+    font-size:13.5px;
+    color:var(--muted);
+    line-height:1.6;
+  }
+  .modal-card .status{
+    margin-top:14px;
+    font-weight:700;
+    color:var(--warn);
+    font-size:14px;
+    letter-spacing:0.3px;
+  }
+  .modal-card .modal-close{
+    margin-top:20px;
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:none;
+    color:var(--muted);
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+  }
+
+  footer{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--muted);
+    padding:14px 10px 22px;
+    opacity:0.75;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .pulse-ring, .coin-fx{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand"><span class="coin">৳</span> TakaBindu</div>
+    <button class="menu-btn" id="menuBtn" aria-label="সেটিংস মেনু খুলুন">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+  </div>
+
+  <main>
+    <div class="balance-card">
+      <div class="balance-label">আপনার ব্যালেন্স</div>
+      <div class="balance-value">৳<span id="balanceMain">0.00</span></div>
+    </div>
+
+    <div class="earn-zone">
+      <div class="ring-wrap">
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring r2"></div>
+        <button class="earn-btn" id="earnBtn" aria-label="ক্লিক করে ৳০.৫০ আয় করুন">
+          <span class="top-text">ক্লিক করে আয় করুন</span>
+          <span class="amount">৳0.50</span>
+        </button>
+      </div>
+      <p class="hint">প্রতিটি ক্লিকে আপনি ৫০ পয়সা আয় করবেন এবং একটি নতুন ট্যাবে ভিডিও ওপেন হবে। ভিডিওটি একবার দেখে ফিরে আসুন এবং আবার ক্লিক করুন।</p>
+    </div>
+  </main>
+
+  <footer>click করো, earn করো, নিজের ভবিষ্যত গড়ো।</footer>
+
+  <!-- Settings overlay + panel -->
+  <div class="overlay" id="overlay"></div>
+  <div class="panel" id="panel">
+    <div class="panel-head">
+      <h2>সেটিংস</h2>
+      <button class="close-btn" id="closeBtn" aria-label="বন্ধ করুন">✕</button>
+    </div>
+    <div class="panel-body">
+
+      <div class="mini-balance">
+        <div>
+          <div class="lbl">বর্তমান ব্যালেন্স</div>
+          <div class="val">৳<span id="balanceSide">0.00</span></div>
+        </div>
+        <button class="withdraw-btn" id="withdrawBtn" style="width:auto; padding:11px 18px;">উত্তোলন</button>
+      </div>
+
+      <div class="field">
+        <label for="nameInput">প্রোফাইল নাম</label>
+        <input id="nameInput" type="text" placeholder="আপনার নাম লিখুন" autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="phoneInput">মোবাইল নম্বর</label>
+        <input id="phoneInput" type="tel" placeholder="01XXXXXXXXX" autocomplete="tel">
+      </div>
+      <button class="save-btn" id="saveBtn">প্রোফাইল সংরক্ষণ করুন</button>
+      <div class="saved-msg" id="savedMsg">✓ প্রোফাইল সংরক্ষিত হয়েছে</div>
+
+      <div class="divider"></div>
+      <button class="withdraw-btn" id="withdrawBtn2">ব্যালেন্স উত্তোলন করুন</button>
+    </div>
+  </div>
+
+  <!-- Withdraw modal -->
+  <div class="modal-overlay" id="withdrawModal">
+    <div class="modal-card">
+      <div class="icon">৳</div>
+      <h3>উত্তোলনের শর্ত পূরণ হয়নি</h3>
+      <p>সর্বনিম্ন উত্তোলন পরিমাণ: <strong>৫০০৳</strong></p>
+      <p>যথেষ্ট ব্যালেন্স জমা হলে উত্তোলন অপশন চালু হবে।</p>
+      <div class="status">I'm waiting</div>
+      <button class="modal-close" id="modalCloseBtn">বন্ধ করুন</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const YT_LINK = "https://www.effectivecpmnetwork.com/f2za1j96df?key=e1115888da778b138d331fe1a54ff7e7";
+  const EARN_AMOUNT = 0.50;
+
+  const balanceMainEl = document.getElementById('balanceMain');
+  const balanceSideEl = document.getElementById('balanceSide');
+  const earnBtn = document.getElementById('earnBtn');
+  const menuBtn = document.getElementById('menuBtn');
+  const closeBtn = document.getElementById('closeBtn');
+  const overlay = document.getElementById('overlay');
+  const panel = document.getElementById('panel');
+  const nameInput = document.getElementById('nameInput');
+  const phoneInput = document.getElementById('phoneInput');
+  const saveBtn = document.getElementById('saveBtn');
+  const savedMsg = document.getElementById('savedMsg');
+  const withdrawBtn = document.getElementById('withdrawBtn');
+  const withdrawBtn2 = document.getElementById('withdrawBtn2');
+  const withdrawModal = document.getElementById('withdrawModal');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+  let balance = 0;
+
+  function fmt(n){ return n.toFixed(2); }
+
+  function renderBalance(){
+    balanceMainEl.textContent = fmt(balance);
+    balanceSideEl.textContent = fmt(balance);
+  }
+
+  function loadData(){
+    try{
+      const savedBalance = localStorage.getItem('takabindu_balance');
+      if(savedBalance !== null){ balance = parseFloat(savedBalance) || 0; }
+    }catch(e){ balance = 0; }
+
+    try{
+      const savedProfile = localStorage.getItem('takabindu_profile');
+      if(savedProfile){
+        const profile = JSON.parse(savedProfile);
+        nameInput.value = profile.name || '';
+        phoneInput.value = profile.mobile || '';
+      }
+    }catch(e){ /* no profile saved yet */ }
+
+    renderBalance();
+  }
+
+  function saveBalance(){
+    try{
+      localStorage.setItem('takabindu_balance', String(balance));
+    }catch(e){ /* storage blocked — balance still works for this session */ }
+  }
+
+  function spawnCoinFx(){
+    const rect = earnBtn.getBoundingClientRect();
+    const fx = document.createElement('div');
+    fx.className = 'coin-fx';
+    fx.textContent = '+৳0.50';
+    fx.style.left = (rect.left + rect.width/2 - 20) + 'px';
+    fx.style.top = (rect.top - 10) + 'px';
+    document.body.appendChild(fx);
+    setTimeout(()=> fx.remove(), 1000);
+  }
+
+  earnBtn.addEventListener('click', function(){
+    balance += EARN_AMOUNT;
+    renderBalance();
+    spawnCoinFx();
+    saveBalance();
+    // নতুন ট্যাবে খুলবে
+    window.open(YT_LINK, '_blank');
+  });
+
+  function openPanel(){
+    panel.classList.add('show');
+    overlay.classList.add('show');
+  }
+  function closePanel(){
+    panel.classList.remove('show');
+    overlay.classList.remove('show');
+  }
+  menuBtn.addEventListener('click', openPanel);
+  closeBtn.addEventListener('click', closePanel);
+  overlay.addEventListener('click', closePanel);
+
+  saveBtn.addEventListener('click', function(){
+    const profile = { name: nameInput.value.trim(), mobile: phoneInput.value.trim() };
+    try{
+      localStorage.setItem('takabindu_profile', JSON.stringify(profile));
+    }catch(e){ /* storage blocked in this environment */ }
+    savedMsg.classList.add('show');
+    setTimeout(()=> savedMsg.classList.remove('show'), 2200);
+  });
+
+  function openWithdrawModal(){
+    withdrawModal.classList.add('show');
+  }
+  function closeWithdrawModal(){
+    withdrawModal.classList.remove('show');
+  }
+  withdrawBtn.addEventListener('click', openWithdrawModal);
+  withdrawBtn2.addEventListener('click', openWithdrawModal);
+  modalCloseBtn.addEventListener('click', closeWithdrawModal);
+  withdrawModal.addEventListener('click', function(e){
+    if(e.target === withdrawModal) closeWithdrawModal();
+  });
+
+  loadData();
+})();
+</script>
+</body>
+</html>
